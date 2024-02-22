@@ -16,15 +16,12 @@ void mostra_min(Meteor met[], int numdados)
     int min = 0;
     for (i = 1; i < numdados; i++)
     {
-        if (met[i].tcelsius < met[min].tcelsius)
+        if (met[i].pammhg < met[min].pammhg)
         {
             min = i;
         }
     }
-    printf("Hora: %d:%d\n", met[min].hora, met[min].minuto);
-    printf("Temperatura: %.1f\n", met[min].tcelsius);
-    printf("Pressão: %.1f\n", met[min].pammhg);
-    printf("Local: %s\n", met[min].local);
+    printf("A pressão mínima de %.2f mmHg occoreu às %02d:%02d, em %s.\n", met[min].pammhg, met[min].hora, met[min].minuto, met[min].local);
 }
 
 int main()
@@ -61,6 +58,8 @@ int main()
     } while (!feof(file));
     fclose(file);
 
+    printf("Foram lidos %d dados\n", i);
     mostra_min(meteors, i);
+
     return 0;
 }
