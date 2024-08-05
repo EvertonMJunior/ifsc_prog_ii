@@ -8,41 +8,56 @@ typedef struct node
     struct node *left, *right;
 } Node;
 
-Node* create_node(char value) {
-    Node* node = malloc(sizeof(Node));
-    node->value=value;
-    return node;
+void check_malloc(void* pointer){
+    if(pointer == NULL){
+        printf("There was an error while allocating memory. Please try again.\n");
+        exit(1);
+    }
 }
 
-// Node* next_free_node(Node *node) {
-//     if(node->left == NULL) return node->left;
-//     if(node->right == NULL) return node->right;
+Node* create_node(char value) {
+    // malloc returns a void, so casting is necessary
+    Node* node = malloc(sizeof(Node));
+    check_malloc(node);
 
-//     return NULL;
-// }
+    node->value=value;
+    node->left=NULL;
+    node->right=NULL;
+
+    return node;
+}
 
 Node* insert(Node *node, char value) {
     if(node == NULL) {
         return create_node(value);
     }
 
-    if(node->left == NULL){
-        node->left = insert(node->left, value);
-    } else if(node->right == NULL){
-        node->right = insert(node->right, value);
-    } else {
-        insert(node->left, value);
+    Node** queue = malloc(100*sizeof(Node*));
+    check_malloc(queue);
+    int front = 0;
+    int rear = 0;
+
+    queue[rear++] = node;
+
+    // Breadth-first search (BFS)
+    while(front < rear) {
+        Node* temp = queue[front++];
+        if(temp->left != NULL) {
+            queue[rear++] = temp->left;
+        } else {
+            temp->left = create_node(value);
+            free(queue);
+            return node;
+        }
+
+        if(temp->right != NULL) {
+            queue[rear++] = temp->right;
+        } else {
+            temp->right = create_node(value);
+            free(queue);
+            return node;
+        }
     }
-
-    return node;
-}
-
-void print_tree(Node *root) {
-    if (root == NULL) return;
-    
-    print_tree(root->left);
-    printf("%c ", root->value);
-    print_tree(root->right);
 }
 
 void print2DUtil(Node* root, int space)
@@ -69,7 +84,6 @@ void print2DUtil(Node* root, int space)
     print2DUtil(root->left, space);
 }
  
-// Wrapper over print2DUtil()
 void print2D(Node* root)
 {
     // Pass initial space count as 0
@@ -86,6 +100,14 @@ int main(){
     insert(root, 'e');
     insert(root, 'f');
     insert(root, 'g');
+    insert(root, 'h');
+    insert(root, 'i');
+    insert(root, 'j');
+    insert(root, 'k');
+    insert(root, 'l');
+    insert(root, 'm');
+    insert(root, 'n');
+    insert(root, 'o');
     print2D(root);
 
     printf("\n\n");
